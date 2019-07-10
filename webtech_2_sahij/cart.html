@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+	
+	<head>
+		<title>Cart</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+		<link rel="stylesheet" href="themes_b/b.css" >
+		<link rel="stylesheet" href="style_1.css" >
+	
+		<link rel="stylesheet" href="themes_b/b.min.css" >
+		<link rel="stylesheet" href="themes/jquery.mobile.icons.min.css" >
+		<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>	
+	
+	</head>
+
+	<body>
+		
+		<div data-role="page" class="div1" data-theme="b" >
+			<div data-role="header">
+				<h1> Your Cart </h1>
+				<a href='home.html' class='ui-btn ui-btn-icon-right ui-icon-carat-r'> Home Page </a>
+			</div>
+			<div role="main" class="ui-content">
+				
+				<ul id="cart" data-role="listview" data-inset="true">
+
+				</ul>
+
+			</div><!-- /content -->
+			<div data-role="footer" style="text-align: center;">	
+				<a href="login.html">logout</a>
+			</div><!-- /footer -->
+
+		</div><!-- /page -->
+		<script>
+			$(document).ready(function() {
+
+				//Database Name, Version, Description, size of the DB
+
+				var db = openDatabase('myd', '1.0', 'Bags database', 2 * 1024 * 1024);
+
+
+
+
+			$.urlParam = function(name) {
+				var res = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+				if (res ==null){
+						return null;
+						
+					}
+					return res[1]||0;
+				}
+				
+				var bagtype = $.urlParam('bagtype');
+				var pic = $.urlParam('pic');
+				var brand= $.urlParam('brand');
+				var price = $.urlParam('price');
+				
+		
+				db.transaction(function(tx) {
+
+					tx.executeSql('CREATE TABLE bag_cart (bagtype,pic,brand,price)');
+				});
+
+				db.transaction(function(tx) {
+					tx.executeSql('INSERT INTO bag_cart (bagtype,pic,brand,price) VALUES (?,?,?,?)', [bagtype,pic,brand,price]);
+					
+
+				});
+			
+		db.transaction(function(tx) {
+			
+							tx.executeSql(' DELETE FROM bag_cart WHERE (bagtype IS NULL OR bagtype  = " " )');
+				});
+				
+				db.transaction(function(tx) {
+
+					tx.executeSql("SELECT * FROM bag_cart", [], function(tx, results) {
+						 
+
+						var len = results.rows.length;
+					//	var ul = $("#random").val();
+						
+						for ( i = 0; i < len; i++) {
+								var li = document.createElement("li");	 
+
+									var bagtype  =  results.rows.item(i).bagtype;
+									var pic  =  results.rows.item(i).pic;
+									var brand  =  results.rows.item(i).brand;
+									var price  =  results.rows.item(i).price;
+									
+									
+										 var info = "<li class='ui-li-static ui-body-inherit ui-li-has-thumb'>"
+										 +"<a href='#'  class='ui-btn ui-btn-icon-right ui-icon-carat-r'>"
+										 +"<h2>" +"Category:" +bagtype +"</h2>"
+										+"<img width = '200px' src='" + pic + "'>"
+									  +"<p>"+ "Brand: " +brand+ "<br>"+"price: $"+price +"</p>"
+									  +"</a>"
+									  +"</li>";
+									 
+									  
+									  $("#cart").append(info);
+									  
+								
+  
+									 
+									
+									
+
+						 }
+						 
+						 
+								
+						
+					});
+				});
+			});
+
+		</script>
+
+	</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Registration Page</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+		<link rel="stylesheet" href="themes/a.css" >
+		<link rel="stylesheet" href="style_1.css" >
+	
+		<link rel="stylesheet" href="themes/a.min.css" >
+		<link rel="stylesheet" href="themes/jquery.mobile.icons.min.css" >
+		<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>	
+
+	</head>
+
+	<body>
+		
+		<div data-role="page" data-theme="a" >
+			<div data-role = "header">
+				<h1>Registration Form</h1>
+			</div>
+
+			<div data-role= "main" class ="ui-content">
+
+				<label for = "fname">User Name</label>
+				<input type="text" id="name" data-clear-btn="true"  name="fname" />
+
+				<label for="Password"> Password </label>
+				<input type="password" name="Password" data-clear-btn="true" id="password" name="Password"/>
+
+				<label for = "PhoneNumber">Phone Number </label>
+				<input type= "number" name = "PhoneNumber" data-clear-btn="true" id="contact"/>
+
+				<label for = "email">Email Address</label>
+				<input type="email" name = "email" data-clear-btn="true" id="mail">
+
+				<label for = "date">Birth Date</label>
+				<input type="date" name = "date" data-clear-btn="true" id="dob">
+
+				<input type="submit" class="ui-btn" id="registration" value="Registration"/>
+
+				<!-- popup validation for all fields-->
+
+				<div data-role="popup" id="user_name"  class="=ui-content" style="max-width:270px" data-dismissible="false"> 
+					
+				<a href="#" data-rel="back" class="ui-btn-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-left"> close</a>
+				<p> opps!!! Try Again With Valid User Name </p>
+			</div>
+					
+				<div data-role="popup" id="user_password"  class="=ui-content" style="max-width:270px" data-dismissible="false"> 
+					
+				<a href="#" data-rel="back" class="ui-btn-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-left"> close</a>
+				<p> opps!!! Try Again With Valid Pasword.. </p>
+			</div>
+			
+				<div data-role="popup" id="user_contact"  class="=ui-content" style="max-width:270px" data-dismissible="false"> 
+					
+				<a href="#" data-rel="back" class="ui-btn-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-left"> close</a>
+				<p> opps!!! Try Again With Valid contact information </p>
+			</div>
+			
+			<div data-role="popup" id="user_mail"  class="=ui-content" style="max-width:270px" data-dismissible="false"> 
+					
+				<a href="#" data-rel="back" class="ui-btn-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-left"> close</a>
+				<p> opps!!! Try Again With Valid Email </p>
+			</div>
+			
+				<div data-role="popup" id="user_dob"  class="=ui-content" style="max-width:270px" data-dismissible="false"> 
+					
+				<a href="#" data-rel="back" class="ui-btn-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-left"> close</a>
+				<p> opps!!! Try Again With Valid DOB </p>
+			</div>
+
+			</div>
+
+			<div data-role = "footer">
+				<h1>If you are alredy user, then click on Login Button</h1>
+				
+				<center>
+					<input type="submit" class="ui-btn" id="login" value="Login"/>
+				</center>
+					<script>
+					$(document).ready(function() {
+						$("#login").click(function() {
+							window.open("login.html");
+						});
+					});
+				</script>
+				
+				
+			</div>
+
+		</div>
+		<script>
+			$(document).ready(function() {
+
+				
+				var db = openDatabase('myd', '1.0', 'Bags database', 2 * 1024 * 1024);
+				$("#registration").click(function() {
+
+					var name = $("#name").val();
+					var password = $("#password").val();
+					var contact = $("#contact").val();
+					var mail = $("#mail").val();
+					var dob = $("#dob").val();
+
+					db.transaction(function(tx) {
+
+						tx.executeSql('CREATE TABLE user (name unique, password,contact unique,mail unique,dob)');
+
+					});
+					db.transaction(function(tx) {
+
+						// tx.executeSql('INSERT INTO user (id, name) VALUES (1, "John")');
+
+						tx.executeSql('INSERT INTO user (name,password,contact,mail,dob) VALUES (?, ?,?,?,?)', [name, password, contact, mail, dob]);
+
+					});
+
+					if (name == "") {
+						$("#user_name").popup("open");
+
+					}
+					if (password == "") {
+						$("#user_password").popup("open");
+					}
+					if (contact == "") {
+						$("#user_contact").popup("open");
+					}
+					if (mail == "") {
+						$("#user_mail").popup("open");
+					}
+					if (dob == "") {
+						$("#user_dob").popup("open");
+					}
+
+					if (name != "" && password != "" && contact != "" && mail != "" && dob != "") {
+						window.open("login.html");
+
+					}
+
+				});
+			});
+
+		</script>
+
+	</body>
+</html>

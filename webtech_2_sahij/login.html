@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Login Page</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+		<link rel="stylesheet" href="themes/a.css" >
+		<link rel="stylesheet" href="style_1.css" >
+	
+		<link rel="stylesheet" href="themes/a.min.css" >
+		<link rel="stylesheet" href="themes/jquery.mobile.icons.min.css" >
+		<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>	
+	
+	</head>
+
+	<body>
+		
+		<div data-role="page" class="div1" data-theme="a" >
+		
+			<div data-role="header">
+				<h1>Login Form</h1>
+			</div><!-- /header -->
+
+			<div role="main" class="ui-content">
+				<input type="text" id="usernamelogin" placeholder="Please enter your name" />
+
+				
+
+				<input type="password" id="passwordlogin" placeholder="Please enter your password" />
+
+				<a class="ui-btn cstm-btn" id="login" > Login </a>
+				
+				<a class="ui-btn cstm-btn" id="reg_page"> Registration </a>
+				
+				<div data-role="popup" id="popupUndismissible" class="=ui-content" style="max-width:270px" data-dismissible="false"> 
+					
+				<a href="#" data-rel="back" class="ui-btn-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-left"> close </a>
+				<p> opps!!! Try Again With Valid User Name and Pasword.. </p>
+			</div>
+						
+				 
+				
+               <script>
+					$(document).ready(function() {
+						$("#reg_page").click(function() {
+							window.open("registration.html");
+						});
+					});
+				</script>
+
+               
+				
+				
+					
+				
+				
+				
+			</div><!-- /content -->
+
+			<div data-role="footer">
+				
+				
+       	</div><!-- /footer -->
+
+		</div><!-- /page -->
+
+		<script>
+			$(document).ready(function(){				
+				//Database Name, Version, Description, size of the DB
+				
+				var db = openDatabase('myd', '1.0', 'Bags database', 2 * 1024 * 1024);
+				db.transaction(function(tx) {
+			
+								tx.executeSql(' DELETE FROM user WHERE (name IS NULL OR name  = " " OR password=" "  OR contact="" OR mail ="" OR dob ="")');
+							});
+
+				
+				$("#login").click(function(){
+					var usernamelogin = $("#usernamelogin").val();
+					
+					var passwordlogin = $("#passwordlogin").val();						
+
+					db.transaction(function (tx) {
+						tx.executeSql('SELECT * FROM user WHERE name == ?', [usernamelogin], function (tx,results) {						
+						//tx.executeSql('SELECT * FROM user', [], function (tx,results) {						
+							var len = results.rows.length;	
+								
+								if (len == 0) {
+									$("#popupUndismissible").popup("open");
+								}
+							for (i = 0; i < len; i++) 
+							{
+								var usernamelogin = $("#usernamelogin").val(); 
+								var  passwordlogin= $("#passwordlogin").val();
+								var userName  =  results.rows.item(i).name;	
+								
+								var passWord  =  results.rows.item(i).password;
+								
+								if (usernamelogin == userName && passwordlogin == passWord){
+									//var queryString="?param1="+ usernamelogin +"?param2="+ passwordlogin;
+									//window.location.href="home.html"+queryString;
+									//window.open('home.html?username='+usernamelogin+'');
+									 //(".cstm-btn").attr("href", "home.html"); 
+									localStorage.setItem( 'objectToPass', usernamelogin );
+
+       								 window.location = "home.html";
+								} 
+								 if (usernamelogin == userName && passwordlogin != passWord ){
+									 $("#popupUndismissible").popup("open");
+								 }
+								
+							}
+						});
+
+					});
+				});
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Assignment-9-10</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+		<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+	</head>
+
+	<body>
+		<div data-role="page">
+			<div data-role="header">
+				<h1> Your Cart </h1>
+				<a href='home.html' class='ui-btn ui-btn-icon-right ui-icon-carat-r'> Home Page </a>
+			</div>
+			<div role="main" class="ui-content">
+				<ul id="cart" data-role="listview" data-inset="true">
+
+				</ul>
+
+			</div><!-- /content -->
+			<div data-role="footer">
+
+			</div><!-- /footer -->
+
+		</div><!-- /page -->
+		<script>
+			$(document).ready(function() {
+
+				//Database Name, Version, Description, size of the DB
+
+				var db = openDatabase('info', '1.0', 'my first cart database', 2 * 1024 * 1024);
+
+
+
+
+				
+				$.urlParam = function(name) {
+					var res = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+					if (res ==null){
+						return null;
+						
+					}
+					return res[1]||0;
+					
+				}
+				
+				var movieName = $.urlParam('name');
+				var pic = $.urlParam('pic');
+				//	var type = $.urlParam('MovieType');
+
+				db.transaction(function(tx) {
+
+					tx.executeSql('CREATE TABLE cart (movieName unique,pic)');
+				});
+
+				db.transaction(function(tx) {
+					tx.executeSql('INSERT INTO cart(movieName,pic) VALUES (?,?)', [movieName, pic]);
+					
+
+				});
+			db.transaction(function(tx) {
+			
+								tx.executeSql(' DELETE FROM cart WHERE (movieName IS NULL OR movieName  = " "  OR movieName  = "false" OR movieName  = "undefined" )');
+							});
+
+				
+				db.transaction(function(tx) {
+
+					tx.executeSql("SELECT * FROM cart", [], function(tx, results) {
+						 
+
+						var len = results.rows.length;
+						var ul = $("#random").val();
+						
+						for ( i = 0; i < len; i++) {
+							var li = document.createElement("li");
+							var movieName = results.rows.item(i).movieName;
+							var showMoviePic = results.rows.item(i).pic;
+
+							var cart_detail = "<li class='ui-li-static ui-body-inherit ui-li-has-thumb'>" + "<a a href='#'  class='ui-btn ui-btn-icon-right ui-icon-carat-r'>" + movieName + "<img width = '200px' src='" + showMoviePic + "'>" + "</a>" + "</li>";
+							//	$("#random").append(text1);
+							$("#cart").append(cart_detail);
+							
+
+						}
+						
+					});
+				});
+			});
+
+		</script>
+
+	</body>
+</html>
